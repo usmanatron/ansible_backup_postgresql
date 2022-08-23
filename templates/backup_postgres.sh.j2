@@ -1,0 +1,9 @@
+#!/bin/bash
+# {{ ansible_managed }}
+DATE=$(date +%Y%m%d)
+BACKUPS_DIR="{{ backup_directory }}"
+
+/usr/bin/pg_dump -h localhost -p 5432 -U postgres -P "${ {{-database_password_variable-}} }" -w -F c --create -f "$BACKUPS_DIR/{{ database_name }}-pgsql-$DATE.dump" -d "{{ database_name }}"
+gzip -9f "$BACKUPS_DIR/{{ database_name }}-pgsql-$DATE.dump"
+
+/usr/bin/find "$BACKUPS_DIR/" -type f -ctime +{{ retention_days }} -exec rm {} \;

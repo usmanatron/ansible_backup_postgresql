@@ -1,12 +1,10 @@
-# Ansible Role: template
+# Ansible Role: Backup PostgreSQL Database
 
-A brief description of the role goes here.
+Backs up a PostgreSQL database daily.  Keeps the last 30 days of backups by default. Assumes the database is local to the machine.
 
 ## Requirements
 
-This role assumes the following:
-
-* TODO
+None
 
 ## Role Variables
 
@@ -14,17 +12,16 @@ This role assumes the following:
 
 | Name | Details |
 | --- | --- |
-| `TODO` | TODO |
+| `parent_directory` | The full parent directory of where you want to store the backups. The rolw will add a `backups` directory to this location. |
+| `database_name` | The name of the database to backup |
+| `database_username` | The username to use to login to the database instance |
+| `database_password` | The password to use to login to the database instance |
 
 ### Default Variables
 
 | Name | Default Value | Details |
 | --- | --- | --- |
-| `TODO` | `TODO` | TODO |
-
-## Dependencies
-
-None
+| `retention_days` | `30` | Number of days to keep backups |
 
 ## License
 

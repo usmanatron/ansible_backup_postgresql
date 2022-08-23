@@ -1,6 +1,32 @@
 ---
-# tasks file for ansible_role_template
-- name: "Hello World!"
-  ansible.builtin.debug:
-    msg: Hello World!
-    
+- name: Ensure backup directories exist
+  ansible.builtin.file:
+    path: "{{ backup_directory }}"
+    mode: 0644
+    state: directory
+
+- name: Add DB password to Environment Variables
+  ansible.builtin.lineinfile:
+    path: /etc/environment
+    regexp: '^{{ database_password_variable }}='
+    line: "{{ database_password_variable }}={{ database_password }}"
+
+- name: Install PostgreSQL Client
+  become: true
+  ansible.builtin.apt:
+    name: postgresql-client
+    state: present
+
+- name: Install backup script
+  ansible.builtin.template:
+    src: backup_postgres.sh.j2
+    dest: "{{ parent_directory }}/backup_postgres_{{ database_name }}.sh"
+    mode: 0644
+
+- name: Run script daily
+  ansible.builtin.cron:
+    name: "Backup Database - {{ database_name }}"
+    minute: "{{ 59 | random(seed=inventory_hostname) }}"
+    hour: "3"
+    job: "{{ parent_directory }}/backup_postgres_{{ database_name }}.sh"
+    state: present

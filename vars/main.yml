@@ -1,2 +1,8 @@
 ---
-# vars file for ansible_role_template
+parent_directory: ""
+database_name: ""
+database_username: ""
+database_password: ""
+
+backup_directory: "{{ parent_directory }}/backups/pgsql_{{ database_name }}"
+database_password_variable: "ANS_BACKUP_PSQL_{{ database_name | upper }}_PASS"
